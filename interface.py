@@ -6,11 +6,10 @@ from tkinter import ttk
 LARGE_FONT = ("Verdana", 12)
 logged_in = False
 
-class SeaofBTCapp(tk.Tk):
+class Root(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
-
         tk.Tk.iconbitmap(self,default="logo_icon.ico")
         tk.Tk.wm_title(self,"Restaurant Management System")
 
@@ -28,7 +27,7 @@ class SeaofBTCapp(tk.Tk):
         if logged_in:
             self.show_frame(StartPage)
         else:
-            self.show_frame(LoginPage)
+            self.show_frame(StartPage)
 
     def show_frame(self,cont):
         frame = self.frames[cont]
@@ -45,7 +44,7 @@ class StartPage(tk.Frame):
                             command=lambda:controller.show_frame(PageOne))
         button1.pack()
         button2 = ttk.Button(self, text="Visit Page 2",
-                            command=lambda: controller.show_frame(PageOne))
+                            command=lambda: controller.show_frame(PageTwo))
         button2.pack()
 
 
@@ -68,14 +67,70 @@ class PageTwo(tk.Frame):
     def __init__(self,parent,controller):
         tk.Frame.__init__(self,parent)
         label = tk.Label(self, text="Page two", font=LARGE_FONT)
-        label.pack(pady=10, padx=10)
+        self.grid()
+
+        for r in range(6):
+            self.master.rowconfigure(r, weight=1)
+
+        Frame1 = tk.Frame(self, bg="red")
+        Frame1.grid(row=0, column=0, rowspan=3, columnspan=2, sticky="WENS")
+        Frame2 = tk.Frame(self, bg="blue")
+        Frame2.grid(row=3, column=0, rowspan=3, columnspan=2, sticky="WENS")
+        Frame3 = tk.Frame(self, bg="green")
+        Frame3.grid(row=0, column=2, rowspan=6, columnspan=3, sticky="WENS")
+
+        notebook = ttk.Notebook(Frame1)
+        f1 = ttk.Frame(notebook)
+        f2 = ttk.Frame(notebook)
+        f3 = ttk.Frame(notebook)
+        f4 = ttk.Frame(notebook)
+        f5 = ttk.Frame(notebook)
+        f6 = ttk.Frame(notebook)
+        notebook.add(f1,text = 'Starter')
+        notebook.add(f2,text = 'Main Menu')
+        notebook.add(f3, text='Salad')
+        notebook.add(f4, text='Pizza')
+        notebook.add(f5, text='Desert')
+        notebook.add(f6, text='Drink')
+        notebook.grid(row=0, column=0, rowspan=3, columnspan=2, sticky="WENS")
+
+        treeview = ttk.Treeview(f1)
+
+        treeview.pack()
+        treeview.config(columns = ('name','price'))
+        treeview.heading('#0',text = '#')
+        treeview.heading('name',text = 'Name')
+        treeview.heading('price', text='Price')
+
+        treeview.insert('', 'end', text="1", values=("French Fries","$3"))
+
+
+
+        # set frame resize priorities
+        f1.rowconfigure(0, weight=1)
+        f1.columnconfigure(0, weight=1)
+
+        listbox = tk.Listbox(Frame2)
+        listbox.insert(1, "Python")
+        listbox.insert(2, "Perl")
+        listbox.insert(3, "C")
+        listbox.insert(4, "PHP")
+        listbox.insert(5, "JSP")
+        listbox.insert(6, "Ruby")
+        listbox.grid(row=3, column=0, rowspan=3, columnspan=2, sticky="WENS")
+
+
+
+
 
         button1 = ttk.Button(self, text="Back to Home",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack()
+
         button2 = ttk.Button(self, text="Page One",
                            command=lambda: controller.show_frame(PageOne))
-        button2.pack()
+        button1.grid(row=6, column=0, rowspan=1, columnspan=1, sticky="WENS")
+
+
 
 class LoginPage(tk.Frame):
     def __init__(self,parent,controller):
@@ -117,5 +172,5 @@ class LoginPage(tk.Frame):
 
 
 
-app = SeaofBTCapp()
+app = Root()
 app.mainloop()
