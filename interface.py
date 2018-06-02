@@ -1,6 +1,11 @@
 import tkinter as tk
 import tkinter.messagebox as tm
 from tkinter import ttk
+import matplotlib.pyplot as plt
+import numpy as np
+import sqlite3 as lite
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 LARGE_FONT = ("Verdana", 12)
@@ -19,7 +24,7 @@ class Root(tk.Tk):
         container.grid_columnconfigure(0,weight=1)
 
         self.frames = {}
-        for F in (StartPage, PageOne, PageTwo,LoginPage):
+        for F in (StartPage, PageOne, PageTwo,LoginPage,Today):
             frame = F(container, self)
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
@@ -46,7 +51,82 @@ class StartPage(tk.Frame):
         button2 = ttk.Button(self, text="Visit Page 2",
                             command=lambda: controller.show_frame(PageTwo))
         button2.pack()
+        
+        button3 = ttk.Button(self, text="Today",
+                             command=lambda: controller.show_frame(Today))
+        button3.pack()
 
+        # Connection to Database and querying data from connected db
+        con = lite.connect('incomes.db')
+        cursor = con.execute("SELECT days,income from db_table")
+
+        # Splitting each column
+        a = cursor.fetchall()
+        b = dict(a)
+        plt.show()
+        days = tuple(b.keys())
+        y_pos = np.arange(len(days))
+        incomes = list(b.values())
+
+        # Attaching Data to window by using bar charts
+        f = Figure(figsize=(5, 5), dpi=100)
+        b = f.add_subplot(111)
+        width = .5
+        k = b.bar(days, incomes, width, align='center', alpha=1)
+        plt.ylabel('INCOME')
+        plt.title('WEEKLY INCOME')
+
+        # Setting color of each bar column
+        k[0].set_color('r')
+        k[1].set_color('b')
+        k[2].set_color('g')
+        k[3].set_color('m')
+        k[4].set_color('c')
+        k[5].set_color('k')
+        k[6].set_color('y')
+
+        # Initializing canvas for our bar chart
+        canvas = FigureCanvasTkAgg(f, self)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+
+class Today(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        label = tk.Label(self, text="Today Graph", font=LARGE_FONT)
+        label.pack(pady=10, padx=10)
+
+        button1 = ttk.Button(self, text="Home",
+                             command=lambda: controller.show_frame(StartPage))
+        button1.pack()
+        button2 = ttk.Button(self, text="Income Graph",
+                             command=lambda: controller.show_frame(PageOne))
+        button2.pack()
+        # Connection to Database and querying data from connected db
+        con = lite.connect('incomes.db')
+        cursor = con.execute("SELECT hours,hourly_income from today")
+
+        # Splitting each column
+        t = cursor.fetchall()
+        b = dict(t)
+        plt.show()
+        hours = tuple(b.keys())
+        y_pos = np.arange(len(hours))
+        hourly_incomes = list(b.values())
+
+        # Attaching Data to window by using line
+        f = Figure(figsize=(5, 5), dpi=100)
+        b = f.add_subplot(111)
+        width = .5
+        k = b.plot(hours, hourly_incomes)
+        plt.ylabel('HOURS')
+        plt.title('TODAY')
+
+        # Initializing canvas for our bar chart
+        canvas = FigureCanvasTkAgg(f, self)
+        canvas.draw()
+        canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
 class PageOne(tk.Frame):
 
