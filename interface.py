@@ -74,7 +74,7 @@ class PageTwo(tk.Frame):
 
         Frame1 = tk.Frame(self, bg="red")
         Frame1.grid(row=0, column=0, rowspan=3, columnspan=2, sticky="WENS")
-        Frame2 = tk.Frame(self, bg="blue")
+        Frame2 = tk.Frame(self)
         Frame2.grid(row=3, column=0, rowspan=3, columnspan=2, sticky="WENS")
         Frame3 = tk.Frame(self, bg="green")
         Frame3.grid(row=0, column=2, rowspan=6, columnspan=3, sticky="WENS")
@@ -117,9 +117,14 @@ class PageTwo(tk.Frame):
         listbox.insert(4, "PHP")
         listbox.insert(5, "JSP")
         listbox.insert(6, "Ruby")
-        listbox.grid(row=3, column=0, rowspan=3, columnspan=2, sticky="WENS")
+        listbox.grid(row=1, column=0, rowspan=4, columnspan=2, sticky="WENS")
 
-
+        dummy_buttons = []
+        for i in range(4):
+            button = ttk.Button(Frame2, text="Button",
+                                command = lambda: self._addToMenu(Frame2))
+            button.grid(row=i+1, column=2, sticky="WENS")
+            dummy_buttons.append(ttk.Button)
 
 
 
@@ -129,8 +134,27 @@ class PageTwo(tk.Frame):
         button2 = ttk.Button(self, text="Page One",
                            command=lambda: controller.show_frame(PageOne))
         button1.grid(row=6, column=0, rowspan=1, columnspan=1, sticky="WENS")
+"""
+        def _addToMenu(frame):
+            label_username = tk.Label(self, text="Username")
+            label_password = tk.Label(self, text="Password")
+            label_username.grid(row=0, sticky="E")
+            self.label_password.grid(row=1, sticky="E")
 
+            entry_table = tk.Entry(self)
+            entry_food = tk.Entry(self)
+            entry_amount = tk.Entry(self)
+            entry_username.grid(row=0, column=1)
+            entry_password.grid(row=1, column=1)
+            """
 
+"""
+        def _removeFromMenu():
+
+        def _makeOrder():
+
+        def _clear():
+"""
 
 class LoginPage(tk.Frame):
     def __init__(self,parent,controller):
